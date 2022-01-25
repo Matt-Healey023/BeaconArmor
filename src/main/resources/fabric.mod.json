@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "beaconarmor",
+  "version": "${version}",
+
+  "name": "Beacon Armor",
+  "description": "Adds new armor after netherite! Craft a new workstation using a dragon egg and imbue your armor with special powers.",
+  "authors": [
+    "Matchewman023"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": "https://github.com/Matt-Healey023/BeaconArmor"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/beaconarmor/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.matchewman023.beaconarmor.BeaconArmor"
+    ]
+  },
+  "mixins": [
+    "beaconarmor.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
