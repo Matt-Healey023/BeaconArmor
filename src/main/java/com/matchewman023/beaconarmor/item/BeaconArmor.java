@@ -9,12 +9,12 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.sound.SoundEvent;
 
 public class BeaconArmor implements ArmorMaterial {
-    private static final int[] BASE_DURABILITY = new int[] {13, 15, 16, 11};
+    private static final int[] BASE_DURABILITY = new int[] {18, 20, 21, 16};
     private static final int[] PROTECTION_VALUES = new int[] {3, 6, 8, 3};
 
     @Override
     public int getDurability(EquipmentSlot slot) {
-        return BASE_DURABILITY[slot.getEntitySlotId()] * 37;
+        return BASE_DURABILITY[slot.getEntitySlotId()] * 55;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class BeaconArmor implements ArmorMaterial {
 
     @Override
     public Ingredient getRepairIngredient() {
-        return Ingredient.ofItems(new ItemConvertible[]{Items.NETHERITE_INGOT});
+        return Ingredient.ofItems(Items.NETHERITE_INGOT);
     }
 
     @Override
