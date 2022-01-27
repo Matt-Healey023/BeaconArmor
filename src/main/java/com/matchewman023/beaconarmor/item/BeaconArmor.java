@@ -2,6 +2,7 @@ package com.matchewman023.beaconarmor.item;
 
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
@@ -9,8 +10,8 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.sound.SoundEvent;
 
 public class BeaconArmor implements ArmorMaterial {
-    private static final int[] BASE_DURABILITY = new int[] {18, 20, 21, 16};
-    private static final int[] PROTECTION_VALUES = new int[] {3, 6, 8, 3};
+    private static final int[] BASE_DURABILITY = new int[] {23, 25, 26, 21};
+    private static final int[] PROTECTION_VALUES = new int[] {5, 8, 10, 5};
 
     @Override
     public int getDurability(EquipmentSlot slot) {

@@ -1,6 +1,6 @@
 package com.matchewman023.beaconarmor;
 
-import com.matchewman023.beaconarmor.registry.RegisterItems;
+import com.matchewman023.beaconarmor.registry.Register;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +10,6 @@ public class BeaconArmor implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        RegisterItems.register();
+        Register.register();
     }
 }

@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "beaconarmor:item/beacon_helmet"
+    "layer0": "beaconarmor:item/beacon_helmet",
+    "layer1": "beaconarmor:item/beacon_helmet_overlay"
   }
 }

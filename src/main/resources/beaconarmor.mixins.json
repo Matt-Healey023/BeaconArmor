@@ -4,10 +4,8 @@
   "package": "com.matchewman023.beaconarmor.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "DyeableArmorItemMixin"
   ],
   "client": [
-    "DyeableArmorItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1
