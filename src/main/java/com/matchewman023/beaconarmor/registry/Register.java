@@ -4,6 +4,8 @@ import com.matchewman023.beaconarmor.block.ImbuingStation;
 import com.matchewman023.beaconarmor.block.entity.ImbuingStationEntity;
 import com.matchewman023.beaconarmor.item.BeaconArmor;
 import com.matchewman023.beaconarmor.screen.ImbuingStationScreenHandler;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.*;
@@ -25,8 +27,8 @@ public class Register {
     public static final Item BEACON_LEGGINGS = new ArmorItem(BEACON, EquipmentSlot.LEGS, new Item.Settings().group(ItemGroup.COMBAT));
     public static final Item BEACON_BOOTS = new ArmorItem(BEACON, EquipmentSlot.FEET, new Item.Settings().group(ItemGroup.COMBAT));
 
-    public static final Block IMBUING_STATION_BLOCK = new ImbuingStation(AbstractBlock.Settings.of(Material.METAL).strength(4.0F).sounds(BlockSoundGroup.METAL));
-    public static final Item IMBUING_STATION_ITEM = new BlockItem(IMBUING_STATION_BLOCK, (new Item.Settings()).group(ItemGroup.DECORATIONS));
+    public static final Block IMBUING_STATION_BLOCK = new ImbuingStation(FabricBlockSettings.of(Material.METAL).strength(4.0F).sounds(BlockSoundGroup.METAL));
+    public static final Item IMBUING_STATION_ITEM = new BlockItem(IMBUING_STATION_BLOCK, new FabricItemSettings().group(ItemGroup.DECORATIONS));
     public static BlockEntityType<ImbuingStationEntity> IMBUING_STATION_ENTITY;
     public static ScreenHandlerType<ImbuingStationScreenHandler> IMBUING_STATION_SCREEN_HANDLER;
 

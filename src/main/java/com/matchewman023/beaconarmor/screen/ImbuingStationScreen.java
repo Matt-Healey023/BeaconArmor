@@ -10,7 +10,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class ImbuingStationScreen extends HandledScreen<ScreenHandler> {
-    private static final Identifier TEXTURE = new Identifier("minecraft", "textures/gui/container/dispenser.png");
+    private static final Identifier TEXTURE = new Identifier("beaconarmor", "textures/gui/container/imbuing_station.png");
 
     public ImbuingStationScreen(ScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
