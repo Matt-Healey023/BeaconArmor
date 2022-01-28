@@ -1,5 +1,6 @@
 package com.matchewman023.beaconarmor.block.entity;
 
+import com.matchewman023.beaconarmor.BeaconArmor;
 import com.matchewman023.beaconarmor.block.ImbuingStation;
 import com.matchewman023.beaconarmor.item.inventory.ImplementedInventory;
 import com.matchewman023.beaconarmor.registry.Register;
@@ -15,6 +16,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class ImbuingStationEntity extends BlockEntity implements ImplementedInventory, NamedScreenHandlerFactory {
@@ -37,5 +39,9 @@ public class ImbuingStationEntity extends BlockEntity implements ImplementedInve
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
         return new ImbuingStationScreenHandler(syncId, inv, this);
+    }
+
+    public static void tick(World world, BlockPos pos, BlockState state, ImbuingStation is) {
+        is.updateFrame(world, pos, state);
     }
 }

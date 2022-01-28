@@ -1,6 +1,13 @@
 {
   "variants": {
-    "": { "model": "beaconarmor:block/imbuing_station" }
+    "frame=0": { "model": "beaconarmor:block/imbuing_station" },
+    "frame=1": { "model": "beaconarmor:block/imbuing_station_frame_1" },
+    "frame=2": { "model": "beaconarmor:block/imbuing_station_frame_2" },
+    "frame=3": { "model": "beaconarmor:block/imbuing_station_frame_3" },
+    "frame=4": { "model": "beaconarmor:block/imbuing_station_frame_4" },
+    "frame=5": { "model": "beaconarmor:block/imbuing_station_frame_5" },
+    "frame=6": { "model": "beaconarmor:block/imbuing_station_frame_6" },
+    "frame=7": { "model": "beaconarmor:block/imbuing_station_frame_7" }
   }
 }
 
