@@ -8,11 +8,6 @@
           "type": "minecraft:item",
           "name": "beaconarmor:imbuing_station"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

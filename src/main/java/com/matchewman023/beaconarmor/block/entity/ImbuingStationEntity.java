@@ -41,7 +41,26 @@ public class ImbuingStationEntity extends BlockEntity implements ImplementedInve
         return new ImbuingStationScreenHandler(syncId, inv, this);
     }
 
+    private static int lastFrame = 0;
+    private static long lastTime = 0;
+    private static int increment = 1;
     public static void tick(World world, BlockPos pos, BlockState state, ImbuingStation is) {
-        is.updateFrame(world, pos, state);
+        if (!world.isClient) {
+            if (lastTime == 0) lastTime = world.getTime();
+            int ticks = 2;
+            int frames = 7;
+
+            for (int i = 0; i <= frames * 2; ++i) {
+                long now = world.getTime();
+                if (now >= lastTime + ticks) {
+                    if (lastFrame == frames) increment = -1;
+                    else if (lastFrame == 0) increment = 1;
+                    lastFrame += increment;
+                    lastTime = now;
+                    is.updateFrame(world, pos, state, lastFrame);
+                    break;
+                }
+            }
+        }
     }
 }

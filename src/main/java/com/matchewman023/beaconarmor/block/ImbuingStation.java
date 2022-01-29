@@ -28,7 +28,6 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 public class ImbuingStation extends BlockWithEntity {
-    private int counter = 0;
     public static final IntProperty FRAME = IntProperty.of("frame", 0, 7);
 
     private static final VoxelShape SHAPE = Stream.of(
@@ -139,13 +138,7 @@ public class ImbuingStation extends BlockWithEntity {
         return checkType(type, Register.IMBUING_STATION_ENTITY, (world1, pos, state1, be) -> ImbuingStationEntity.tick(world, pos, state, this));
     }
 
-    public void updateFrame(World world, BlockPos pos, BlockState state) {
-        if (counter % 5 == 0) {
-            world.setBlockState(pos, state.with(FRAME, counter / 5));
-        }
-        ++counter;
-        if (counter == 8 * 5) {
-            counter = 0;
-        }
+    public static void updateFrame(World world, BlockPos pos, BlockState state, int frame) {
+        if (!world.isClient()) world.setBlockState(pos, state.with(FRAME, frame));
     }
 }
