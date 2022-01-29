@@ -36,7 +36,6 @@ public class ImbuingStationScreen extends HandledScreen<ScreenHandler> {
     @Override
     protected void init() {
         super.init();
-        // Center the title
         titleX = (backgroundWidth - textRenderer.getWidth(title)) / 2;
     }
 }

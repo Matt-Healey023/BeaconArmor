@@ -8,6 +8,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.screen.slot.CraftingResultSlot;
 import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,18 +16,25 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
     private final Inventory inventory;
 
     public ImbuingStationScreenHandler(int syncId, PlayerInventory inventory) {
-        this(syncId, inventory, new SimpleInventory(2));
+        this(syncId, inventory, new SimpleInventory(8));
     }
 
     public ImbuingStationScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {
         super(Register.IMBUING_STATION_SCREEN_HANDLER, syncId);
-        checkSize(inventory, 2);
+        checkSize(inventory, 8);
         this.inventory = inventory;
 
         inventory.onOpen(playerInventory.player);
 
-        this.addSlot(new Slot(inventory, 0, 50, 10));
-        this.addSlot(new Slot(inventory, 1, 100, 10));
+        this.addSlot(new Slot(inventory, 0, 8, 8));
+        this.addSlot(new Slot(inventory, 1, 8, 26));
+        this.addSlot(new Slot(inventory, 2, 8, 44));
+        this.addSlot(new Slot(inventory, 3, 8, 62));
+
+        this.addSlot(new Slot(inventory, 4, 152, 8));
+        this.addSlot(new Slot(inventory, 5, 152, 26));
+        this.addSlot(new Slot(inventory, 6, 152, 44));
+        this.addSlot(new Slot(inventory, 7, 152, 62));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
