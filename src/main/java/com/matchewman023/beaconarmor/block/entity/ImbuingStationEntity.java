@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class ImbuingStationEntity extends BlockEntity implements ImplementedInventory, NamedScreenHandlerFactory {
-    private DefaultedList<ItemStack> items = DefaultedList.ofSize(8, ItemStack.EMPTY);
+    private final DefaultedList<ItemStack> items = DefaultedList.ofSize(17, ItemStack.EMPTY);
 
     public ImbuingStationEntity(BlockPos pos, BlockState state) {
         super(Register.IMBUING_STATION_ENTITY, pos, state);
