@@ -60,6 +60,12 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         }
     }
 
+    // Check for block amount
+    @Override
+    public void onContentChanged(Inventory inventory) {
+        super.onContentChanged(inventory);
+    }
+
     @Override
     public boolean canUse(PlayerEntity player) {
         return this.inventory.canPlayerUse(player);
