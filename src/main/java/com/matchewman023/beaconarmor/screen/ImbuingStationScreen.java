@@ -1,5 +1,6 @@
 package com.matchewman023.beaconarmor.screen;
 
+import com.matchewman023.beaconarmor.block.ImbuingStation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.GameRenderer;
@@ -9,10 +10,10 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public class ImbuingStationScreen extends HandledScreen<ScreenHandler> {
+public class ImbuingStationScreen extends HandledScreen<ImbuingStationScreenHandler> {
     private static final Identifier TEXTURE = new Identifier("beaconarmor", "textures/gui/container/imbuing_station.png");
 
-    public ImbuingStationScreen(ScreenHandler handler, PlayerInventory inventory, Text title) {
+    public ImbuingStationScreen(ImbuingStationScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
     }
 

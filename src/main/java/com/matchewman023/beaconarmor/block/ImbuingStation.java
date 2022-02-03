@@ -9,12 +9,14 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Items;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -27,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Random;
 import java.util.stream.Stream;
 
-public class ImbuingStation extends BlockWithEntity {
+public class ImbuingStation extends BlockWithEntity implements BlockEntityProvider {
     public static final IntProperty FRAME = IntProperty.of("frame", 0, 7);
 
     private static final VoxelShape SHAPE = Stream.of(
@@ -126,6 +128,18 @@ public class ImbuingStation extends BlockWithEntity {
             }
         }
         return ActionResult.SUCCESS;
+    }
+
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (state.getBlock() != newState.getBlock()) {
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof ImbuingStationEntity) {
+                ItemScatterer.spawn(world, pos, (ImbuingStationEntity)blockEntity);
+                world.updateComparators(pos,this);
+            }
+            super.onStateReplaced(state, world, pos, newState, moved);
+        }
     }
 
     @Override

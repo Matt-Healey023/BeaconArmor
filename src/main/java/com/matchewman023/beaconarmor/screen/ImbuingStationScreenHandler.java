@@ -1,5 +1,6 @@
 package com.matchewman023.beaconarmor.screen;
 
+import com.matchewman023.beaconarmor.BeaconArmor;
 import com.matchewman023.beaconarmor.registry.Register;
 import com.matchewman023.beaconarmor.screen.slot.*;
 import net.minecraft.entity.player.PlayerEntity;
@@ -7,6 +8,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.CraftingResultSlot;
