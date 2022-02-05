@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
@@ -42,25 +43,54 @@ public class ImbuingStationEntity extends BlockEntity implements ImplementedInve
         return new ImbuingStationScreenHandler(syncId, inv, this);
     }
 
-    public static boolean hasBeacon(ImbuingStationEntity entity) {
-        return entity.getStack(4).isOf(Items.BEACON);
+    @Override
+    public void onClose(PlayerEntity player) {
+        for (int i = 0; i <= 12; ++i) {
+            ItemStack itemStack = this.getStack(i);
+            if (!itemStack.isEmpty()) {
+                if (player.isAlive() && !((ServerPlayerEntity) player).isDisconnected()) {
+                    player.getInventory().offerOrDrop(itemStack);
+                } else {
+                    player.dropItem(itemStack, false);
+                }
+            }
+        }
     }
 
-    public static boolean hasEnoughBlocks(ImbuingStationEntity entity) {
-        return (entity.getStack(5).getCount() +
-                entity.getStack(6).getCount() +
-                entity.getStack(7).getCount() +
-                entity.getStack(8).getCount() +
-                entity.getStack(9).getCount() +
-                entity.getStack(10).getCount() +
-                entity.getStack(11).getCount() +
-                entity.getStack(12).getCount()) >= (81 + 49 + 25 + 9);
+    public static void tick(World world, BlockPos pos, BlockState state, ImbuingStationEntity entity) {
+        if (entity.hasBeacon() && entity.getAmountBlocks() >= 164 && entity.hasArmor()) {
+            entity.clearBlocks();
+        }
     }
 
-    public static boolean hasArmor(ImbuingStationEntity entity) {
-        return entity.getStack(0).isOf(Items.NETHERITE_HELMET) &&
-                entity.getStack(1).isOf(Items.NETHERITE_CHESTPLATE) &&
-                entity.getStack(2).isOf(Items.NETHERITE_LEGGINGS) &&
-                entity.getStack(3).isOf(Items.NETHERITE_BOOTS);
+    private boolean hasBeacon() {
+        return this.getStack(4).isOf(Items.BEACON);
+    }
+
+    private int getAmountBlocks() {
+        int total = 0;
+        for (int i = 5; i <= 12; ++i) {
+            total += this.getStack(i).getCount();
+        }
+        return total;
+    }
+
+    private boolean hasArmor() {
+        return (this.getStack(0).isOf(Items.NETHERITE_HELMET) || this.getStack(0).isOf(Register.BEACON_HELMET)) &&
+                (this.getStack(1).isOf(Items.NETHERITE_CHESTPLATE) || this.getStack(1).isOf(Register.BEACON_CHESTPLATE)) &&
+                (this.getStack(2).isOf(Items.NETHERITE_LEGGINGS) || this.getStack(2).isOf(Register.BEACON_LEGGINGS)) &&
+                (this.getStack(3).isOf(Items.NETHERITE_BOOTS) || this.getStack(3).isOf(Register.BEACON_BOOTS));
+    }
+
+    private void clearBlocks() {
+        for (int i = 4; i <= 12; ++i) {
+            this.getStack(i).setCount(0);
+        }
+    }
+
+    private void clearArmor() {
+        for (int i = 0; i <= 3; ++i) {
+            this.getStack(i).setCount(0);
+        }
     }
 }
