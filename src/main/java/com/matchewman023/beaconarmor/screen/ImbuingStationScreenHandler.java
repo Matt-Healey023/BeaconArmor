@@ -10,6 +10,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.CraftingResultSlot;
 import net.minecraft.screen.slot.Slot;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ImbuingStationScreenHandler extends ScreenHandler {
     private final Inventory inventory;
+    private boolean canUpgrade = false;
 
     public ImbuingStationScreenHandler(int syncId, PlayerInventory inventory) {
         this(syncId, inventory, new SimpleInventory(17));
@@ -51,6 +53,16 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         this.addSlot(new ItemSlot(inventory, 14, 152, 26));
         this.addSlot(new ItemSlot(inventory, 15, 152, 44));
         this.addSlot(new ItemSlot(inventory, 16, 152, 62));
+
+        this.addListener(new ScreenHandlerListener() {
+            @Override
+            public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
+                hasContents();
+            }
+
+            @Override
+            public void onPropertyUpdate(ScreenHandler handler, int property, int value) {}
+        });
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -106,6 +118,48 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
                     }
                 }
             }
+        }
+    }
+
+    public void upgrade() {
+        BeaconArmor.LOGGER.info("Upgrade");
+    }
+
+    public boolean hasContents() {
+        if (this.hasBeacon() && this.getAmountBlocks() >= 164 && this.hasArmor()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canUpgrade() { return canUpgrade; }
+
+    private boolean hasBeacon() {
+        return inventory.getStack(4).isOf(Items.BEACON);
+    }
+
+    private int getAmountBlocks() {
+        int total = 0;
+        for (int i = 5; i <= 12; ++i) {
+            total += inventory.getStack(i).getCount();
+        }
+        return total;
+    }
+
+    private boolean hasArmor() {
+        return (inventory.getStack(0).isOf(Items.NETHERITE_HELMET) && inventory.getStack(1).isOf(Items.NETHERITE_CHESTPLATE) && inventory.getStack(2).isOf(Items.NETHERITE_LEGGINGS) && inventory.getStack(3).isOf(Items.NETHERITE_BOOTS)) ||
+                (inventory.getStack(0).isOf(Register.BEACON_HELMET) && inventory.getStack(1).isOf(Register.BEACON_CHESTPLATE) && inventory.getStack(2).isOf(Register.BEACON_LEGGINGS) && inventory.getStack(3).isOf(Register.BEACON_BOOTS));
+    }
+
+    private void clearBlocks() {
+        for (int i = 4; i <= 12; ++i) {
+            inventory.getStack(i).setCount(0);
+        }
+    }
+
+    private void clearArmor() {
+        for (int i = 0; i <= 3; ++i) {
+            inventory.getStack(i).setCount(0);
         }
     }
 }

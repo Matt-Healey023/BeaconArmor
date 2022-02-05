@@ -1,7 +1,6 @@
 package com.matchewman023.beaconarmor.block;
 
 import com.matchewman023.beaconarmor.BeaconArmor;
-import com.matchewman023.beaconarmor.block.entity.ImbuingStationEntity;
 import com.matchewman023.beaconarmor.registry.Register;
 import com.matchewman023.beaconarmor.screen.ImbuingStationScreenHandler;
 import net.minecraft.block.*;
@@ -65,18 +64,6 @@ public class ImbuingStation extends Block {
             }
         }
         return ActionResult.SUCCESS;
-    }
-
-    @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (state.getBlock() != newState.getBlock()) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof ImbuingStationEntity) {
-                ItemScatterer.spawn(world, pos, (ImbuingStationEntity)blockEntity);
-                world.updateComparators(pos,this);
-            }
-            super.onStateReplaced(state, world, pos, newState, moved);
-        }
     }
 
     public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {

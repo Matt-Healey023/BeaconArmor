@@ -1,17 +1,25 @@
 package com.matchewman023.beaconarmor.screen;
 
+import com.google.common.collect.Lists;
+import com.matchewman023.beaconarmor.BeaconArmor;
 import com.matchewman023.beaconarmor.block.ImbuingStation;
+import com.matchewman023.beaconarmor.screen.button.UpgradeButton;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.screen.ingame.BeaconScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+
+import java.util.List;
 
 public class ImbuingStationScreen extends HandledScreen<ImbuingStationScreenHandler> {
     private static final Identifier TEXTURE = new Identifier("beaconarmor", "textures/gui/container/imbuing_station.png");
+    private UpgradeButton button;
 
     public ImbuingStationScreen(ImbuingStationScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -38,6 +46,10 @@ public class ImbuingStationScreen extends HandledScreen<ImbuingStationScreenHand
         if (handler.getSlot(14).getStack().isEmpty()) drawTexture(matrices, x + 152, y + 26, 177, 85, 16, 16);
         if (handler.getSlot(15).getStack().isEmpty()) drawTexture(matrices, x + 152, y + 44, 177, 85, 16, 16);
         if (handler.getSlot(16).getStack().isEmpty()) drawTexture(matrices, x + 152, y + 62, 177, 85, 16, 16);
+
+        button.active = false;
+        if (handler.hasContents()) button.active = true;
+
     }
 
     @Override
@@ -50,6 +62,9 @@ public class ImbuingStationScreen extends HandledScreen<ImbuingStationScreenHand
     @Override
     protected void init() {
         super.init();
+        button = new UpgradeButton(x + 63, y + 62, 50, 18, new TranslatableText("beaconarmor.button.upgrade"), handler);
+        button.active = false;
+        this.addDrawableChild(button);
     }
 
     @Override

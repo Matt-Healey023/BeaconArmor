@@ -4,5 +4,6 @@
   "item.beaconarmor.beacon_leggings": "Beacon Leggings",
   "item.beaconarmor.beacon_boots": "Beacon Boots",
   "block.beaconarmor.imbuing_station": "Imbuing Station",
-  "container.beaconarmor.imbue": "Imbue"
+  "container.beaconarmor.imbue": "Imbue",
+  "beaconarmor.button.upgrade": "Upgrade"
 }
