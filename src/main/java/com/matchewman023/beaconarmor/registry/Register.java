@@ -1,7 +1,6 @@
 package com.matchewman023.beaconarmor.registry;
 
 import com.matchewman023.beaconarmor.block.ImbuingStation;
-import com.matchewman023.beaconarmor.block.entity.ImbuingStationEntity;
 import com.matchewman023.beaconarmor.item.BeaconArmor;
 import com.matchewman023.beaconarmor.screen.ImbuingStationScreenHandler;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -29,7 +28,6 @@ public class Register {
 
     public static final Block IMBUING_STATION_BLOCK = new ImbuingStation(FabricBlockSettings.of(Material.STONE).strength(10.0F, 1200.0F).sounds(BlockSoundGroup.STONE).nonOpaque().luminance(10).requiresTool());
     public static final Item IMBUING_STATION_ITEM = new BlockItem(IMBUING_STATION_BLOCK, new FabricItemSettings().group(ItemGroup.DECORATIONS).fireproof());
-    public static BlockEntityType<ImbuingStationEntity> IMBUING_STATION_ENTITY;
     public static ScreenHandlerType<ImbuingStationScreenHandler> IMBUING_STATION_SCREEN_HANDLER;
 
     public static void register() {
@@ -40,7 +38,6 @@ public class Register {
 
         Registry.register(Registry.BLOCK, new Identifier("beaconarmor", "imbuing_station"), IMBUING_STATION_BLOCK);
         Registry.register(Registry.ITEM, new Identifier("beaconarmor", "imbuing_station"), IMBUING_STATION_ITEM);
-        IMBUING_STATION_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier("beaconarmor", "imbuing_station_entity"), FabricBlockEntityTypeBuilder.create(ImbuingStationEntity::new, IMBUING_STATION_BLOCK).build(null));
         IMBUING_STATION_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(new Identifier("beaconarmor", "imbuing_station"), ImbuingStationScreenHandler::new);
     }
 }

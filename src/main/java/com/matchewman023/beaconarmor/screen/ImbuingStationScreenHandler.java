@@ -13,6 +13,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.CraftingResultSlot;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class ImbuingStationScreenHandler extends ScreenHandler {
@@ -90,5 +91,21 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         }
 
         return newStack;
+    }
+
+    @Override
+    public void close(PlayerEntity player) {
+        if (!player.getWorld().isClient) {
+            for (int i = 0; i <= 12; ++i) {
+                ItemStack itemStack = inventory.getStack(i);
+                if (!itemStack.isEmpty()) {
+                    if (player.isAlive() && !((ServerPlayerEntity) player).isDisconnected()) {
+                        player.getInventory().offerOrDrop(itemStack);
+                    } else {
+                        player.dropItem(itemStack, false);
+                    }
+                }
+            }
+        }
     }
 }

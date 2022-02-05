@@ -3,6 +3,7 @@ package com.matchewman023.beaconarmor.block;
 import com.matchewman023.beaconarmor.BeaconArmor;
 import com.matchewman023.beaconarmor.block.entity.ImbuingStationEntity;
 import com.matchewman023.beaconarmor.registry.Register;
+import com.matchewman023.beaconarmor.screen.ImbuingStationScreenHandler;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -10,10 +11,14 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Items;
+import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
@@ -29,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Random;
 import java.util.stream.Stream;
 
-public class ImbuingStation extends BlockWithEntity implements BlockEntityProvider {
+public class ImbuingStation extends Block {
     private static final VoxelShape SHAPE = Stream.of(
             Block.createCuboidShape(3, 0, 3, 13, 1, 13),
             Block.createCuboidShape(4, 1, 4, 12, 11, 12),
@@ -43,11 +48,6 @@ public class ImbuingStation extends BlockWithEntity implements BlockEntityProvid
 
     public ImbuingStation(Settings settings) {
         super(settings);
-    }
-
-    @Override
-    public BlockEntity createBlockEntity (BlockPos pos, BlockState state) {
-        return new ImbuingStationEntity(pos, state);
     }
 
     @Override
@@ -79,9 +79,9 @@ public class ImbuingStation extends BlockWithEntity implements BlockEntityProvid
         }
     }
 
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, Register.IMBUING_STATION_ENTITY, ImbuingStationEntity::tick);
+    public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
+        return new SimpleNamedScreenHandlerFactory((syncId, inventory, player) -> {
+            return new ImbuingStationScreenHandler(syncId, player.getInventory());
+        }, new TranslatableText("beaconarmor.container.imbue"));
     }
 }
