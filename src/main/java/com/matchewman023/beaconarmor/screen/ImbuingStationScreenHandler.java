@@ -3,23 +3,29 @@ package com.matchewman023.beaconarmor.screen;
 import com.matchewman023.beaconarmor.BeaconArmor;
 import com.matchewman023.beaconarmor.registry.Register;
 import com.matchewman023.beaconarmor.screen.slot.*;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.CraftingResultSlot;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class ImbuingStationScreenHandler extends ScreenHandler {
     private final Inventory inventory;
-    private boolean canUpgrade = false;
+    private final int blocks = 164;
+    private PlayerEntity player;
 
     public ImbuingStationScreenHandler(int syncId, PlayerInventory inventory) {
         this(syncId, inventory, new SimpleInventory(17));
@@ -29,6 +35,7 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         super(Register.IMBUING_STATION_SCREEN_HANDLER, syncId);
         checkSize(inventory, 17);
         this.inventory = inventory;
+        this.player = playerInventory.player;
 
         inventory.onOpen(playerInventory.player);
 
@@ -53,16 +60,6 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         this.addSlot(new ItemSlot(inventory, 14, 152, 26));
         this.addSlot(new ItemSlot(inventory, 15, 152, 44));
         this.addSlot(new ItemSlot(inventory, 16, 152, 62));
-
-        this.addListener(new ScreenHandlerListener() {
-            @Override
-            public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
-                hasContents();
-            }
-
-            @Override
-            public void onPropertyUpdate(ScreenHandler handler, int property, int value) {}
-        });
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -122,17 +119,20 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
     }
 
     public void upgrade() {
-        BeaconArmor.LOGGER.info("Upgrade");
+        if (inventory.getStack(0).isOf(Items.NETHERITE_HELMET)) {
+            clearBlocks();
+            clearArmor();
+            getBeaconArmor();
+        }
+        player.playSound(SoundEvents.BLOCK_BEACON_ACTIVATE, 1.0F, 1.0F);
     }
 
     public boolean hasContents() {
-        if (this.hasBeacon() && this.getAmountBlocks() >= 164 && this.hasArmor()) {
+        if (this.hasBeacon() && this.getAmountBlocks() >= blocks && this.hasArmor()) {
             return true;
         }
         return false;
     }
-
-    public boolean canUpgrade() { return canUpgrade; }
 
     private boolean hasBeacon() {
         return inventory.getStack(4).isOf(Items.BEACON);
@@ -152,14 +152,30 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
     }
 
     private void clearBlocks() {
-        for (int i = 4; i <= 12; ++i) {
-            inventory.getStack(i).setCount(0);
+        inventory.removeStack(4, 1);
+        int total = this.blocks;
+        for (int i = 5; i <= 12; ++i) {
+            ItemStack stack = inventory.getStack(i);
+            if (total >= stack.getCount()) {
+                total -= stack.getCount();
+                inventory.removeStack(i);
+            } else if (total < stack.getCount()) {
+                inventory.removeStack(i, total);
+                break;
+            }
         }
     }
 
     private void clearArmor() {
         for (int i = 0; i <= 3; ++i) {
-            inventory.getStack(i).setCount(0);
+            inventory.removeStack(i);
         }
+    }
+
+    private void getBeaconArmor() {
+        inventory.setStack(0, new ItemStack(Register.BEACON_HELMET));
+        inventory.setStack(1, new ItemStack(Register.BEACON_CHESTPLATE));
+        inventory.setStack(2, new ItemStack(Register.BEACON_LEGGINGS));
+        inventory.setStack(3, new ItemStack(Register.BEACON_BOOTS));
     }
 }

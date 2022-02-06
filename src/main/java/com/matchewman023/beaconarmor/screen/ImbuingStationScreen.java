@@ -62,7 +62,7 @@ public class ImbuingStationScreen extends HandledScreen<ImbuingStationScreenHand
     @Override
     protected void init() {
         super.init();
-        button = new UpgradeButton(x + 63, y + 62, 50, 18, new TranslatableText("beaconarmor.button.upgrade"), handler);
+        button = new UpgradeButton(x + 63, y + 62, 50, 20, new TranslatableText("container.beaconarmor.imbue"), handler);
         button.active = false;
         this.addDrawableChild(button);
     }

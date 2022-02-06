@@ -67,8 +67,6 @@ public class ImbuingStation extends Block {
     }
 
     public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
-        return new SimpleNamedScreenHandlerFactory((syncId, inventory, player) -> {
-            return new ImbuingStationScreenHandler(syncId, player.getInventory());
-        }, new TranslatableText("beaconarmor.container.imbue"));
+        return new SimpleNamedScreenHandlerFactory((syncId, inventory, player) -> new ImbuingStationScreenHandler(syncId, player.getInventory()), new TranslatableText("beaconarmor.container.imbue"));
     }
 }
