@@ -21,10 +21,10 @@ import org.lwjgl.system.CallbackI;
 public class Register {
     public static final ArmorMaterial BEACON = new BeaconArmor();
 
-    public static final Item BEACON_HELMET = new ArmorItem(BEACON, EquipmentSlot.HEAD, new Item.Settings().group(ItemGroup.COMBAT));
-    public static final Item BEACON_CHESTPLATE = new ArmorItem(BEACON, EquipmentSlot.CHEST, new Item.Settings().group(ItemGroup.COMBAT));
-    public static final Item BEACON_LEGGINGS = new ArmorItem(BEACON, EquipmentSlot.LEGS, new Item.Settings().group(ItemGroup.COMBAT));
-    public static final Item BEACON_BOOTS = new ArmorItem(BEACON, EquipmentSlot.FEET, new Item.Settings().group(ItemGroup.COMBAT));
+    public static final Item BEACON_HELMET = new ArmorItem(BEACON, EquipmentSlot.HEAD, new Item.Settings().group(ItemGroup.COMBAT).fireproof());
+    public static final Item BEACON_CHESTPLATE = new ArmorItem(BEACON, EquipmentSlot.CHEST, new Item.Settings().group(ItemGroup.COMBAT).fireproof());
+    public static final Item BEACON_LEGGINGS = new ArmorItem(BEACON, EquipmentSlot.LEGS, new Item.Settings().group(ItemGroup.COMBAT).fireproof());
+    public static final Item BEACON_BOOTS = new ArmorItem(BEACON, EquipmentSlot.FEET, new Item.Settings().group(ItemGroup.COMBAT).fireproof());
 
     public static final Block IMBUING_STATION_BLOCK = new ImbuingStation(FabricBlockSettings.of(Material.STONE).strength(10.0F, 1200.0F).sounds(BlockSoundGroup.STONE).nonOpaque().luminance(10).requiresTool());
     public static final Item IMBUING_STATION_ITEM = new BlockItem(IMBUING_STATION_BLOCK, new FabricItemSettings().group(ItemGroup.DECORATIONS).fireproof());

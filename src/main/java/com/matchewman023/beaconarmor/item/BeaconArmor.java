@@ -50,6 +50,6 @@ public class BeaconArmor implements ArmorMaterial {
 
     @Override
     public float getKnockbackResistance() {
-        return 0.0F;
+        return 0.3F;
     }
 }
