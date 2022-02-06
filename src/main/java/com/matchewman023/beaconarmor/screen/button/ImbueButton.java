@@ -6,19 +6,17 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
-public class UpgradeButton extends PressableWidget {
+public class ImbueButton extends ImbuePressableWidget {
     private final ImbuingStationScreenHandler handler;
 
-    public UpgradeButton(int x, int y, int width, int height, Text message, ImbuingStationScreenHandler handler) {
-        super(x, y, width, height, message);
+    public ImbueButton(int x, int y, ImbuingStationScreenHandler handler) {
+        super(x, y);
         this.handler = handler;
     }
 
@@ -31,6 +29,6 @@ public class UpgradeButton extends PressableWidget {
 
     @Override
     public void appendNarrations(NarrationMessageBuilder builder) {
-
+        return;
     }
 }
