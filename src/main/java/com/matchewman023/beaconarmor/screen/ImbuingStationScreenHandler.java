@@ -5,12 +5,18 @@ import com.matchewman023.beaconarmor.registry.Register;
 import com.matchewman023.beaconarmor.screen.slot.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
@@ -121,8 +127,7 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
     public void upgrade() {
         if (inventory.getStack(0).isOf(Items.NETHERITE_HELMET)) {
             clearBlocks();
-            clearArmor();
-            getBeaconArmor();
+            upgradeArmor();
         }
         player.playSound(SoundEvents.BLOCK_BEACON_ACTIVATE, 1.0F, 1.0F);
     }
@@ -166,16 +171,21 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         }
     }
 
-    private void clearArmor() {
-        for (int i = 0; i <= 3; ++i) {
+    private void upgradeArmor() {
+        for (int i = 0; i <= 3; ++ i) {
+            ItemStack item = new ItemStack(getArmorItem(i));
+            item.setNbt(inventory.getStack(i).getNbt());
             inventory.removeStack(i);
+            inventory.setStack(i, item);
         }
     }
 
-    private void getBeaconArmor() {
-        inventory.setStack(0, new ItemStack(Register.BEACON_HELMET));
-        inventory.setStack(1, new ItemStack(Register.BEACON_CHESTPLATE));
-        inventory.setStack(2, new ItemStack(Register.BEACON_LEGGINGS));
-        inventory.setStack(3, new ItemStack(Register.BEACON_BOOTS));
+    private Item getArmorItem(int i) {
+        switch (i) {
+            case 1: return Register.BEACON_CHESTPLATE;
+            case 2: return Register.BEACON_LEGGINGS;
+            case 3: return Register.BEACON_BOOTS;
+            default: return Register.BEACON_HELMET;
+        }
     }
 }
