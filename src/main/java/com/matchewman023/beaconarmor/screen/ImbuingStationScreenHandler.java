@@ -1,6 +1,7 @@
 package com.matchewman023.beaconarmor.screen;
 
 import com.matchewman023.beaconarmor.BeaconArmor;
+import com.matchewman023.beaconarmor.item.BeaconArmorItem;
 import com.matchewman023.beaconarmor.registry.Register;
 import com.matchewman023.beaconarmor.screen.slot.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -175,8 +176,8 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         for (int i = 0; i <= 3; ++ i) {
             ItemStack item = new ItemStack(getArmorItem(i));
             NbtCompound nbt = inventory.getStack(i).getNbt();
-            nbt.putInt("PowerLevel", 1);
             item.setNbt(nbt);
+            BeaconArmorItem.setLevel(item, 1);
 
             inventory.removeStack(i);
             inventory.setStack(i, item);

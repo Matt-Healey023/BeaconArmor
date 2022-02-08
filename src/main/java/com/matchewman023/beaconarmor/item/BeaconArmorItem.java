@@ -34,8 +34,7 @@ public class BeaconArmorItem extends DyeableArmorItem {
                 NbtCompound nbt = stack.getNbt();
 
                 if (!stack.getNbt().contains("PowerLevel")) {
-                    nbt.putInt("PowerLevel", 1);
-                    setLore(stack, "Level 1");
+                    setLevel(stack, 1);
                 }
 
                 PlayerEntity player = (PlayerEntity) entity;
@@ -55,12 +54,14 @@ public class BeaconArmorItem extends DyeableArmorItem {
                 player.getInventory().getArmorStack(3).isOf(Register.BEACON_HELMET);
     }
 
-    public static void setLore(ItemStack stack, String loreText) {
+    public static void setLevel(ItemStack stack, int level) {
         NbtCompound nbt = stack.getNbt();
+        nbt.putInt("PowerLevel", 1);
+
         NbtCompound display = nbt.getCompound(ItemStack.DISPLAY_KEY);
         NbtList lore = new NbtList();
 
-        lore.add(NbtString.of(Text.Serializer.toJson(new LiteralText(loreText).styled(style -> style.withItalic(false).withBold(true).withFormatting(Formatting.RED)))));
+        lore.add(NbtString.of(Text.Serializer.toJson(new LiteralText("Level " + level).styled(style -> style.withItalic(false).withBold(true).withFormatting(Formatting.GREEN)))));
         display.put(ItemStack.LORE_KEY, lore);
         nbt.put(ItemStack.DISPLAY_KEY, display);
         stack.setNbt(nbt);
