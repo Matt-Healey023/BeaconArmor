@@ -10,6 +10,11 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
@@ -26,9 +31,15 @@ public class BeaconArmorItem extends DyeableArmorItem {
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         if (!world.isClient()) {
             if (entity instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) entity;
+                NbtCompound nbt = stack.getNbt();
 
-                if (hasArmor(player)) {
+                if (!stack.getNbt().contains("PowerLevel")) {
+                    nbt.putInt("PowerLevel", 1);
+                    setLore(stack, "Level 1");
+                }
+
+                PlayerEntity player = (PlayerEntity) entity;
+                if (hasArmor(player) && stack.isOf(Register.BEACON_HELMET)) {
                     // Add Effects
                 }
             }
@@ -44,6 +55,29 @@ public class BeaconArmorItem extends DyeableArmorItem {
                 player.getInventory().getArmorStack(3).isOf(Register.BEACON_HELMET);
     }
 
+    public static void setLore(ItemStack stack, String loreText) {
+        NbtCompound nbt = stack.getNbt();
+        NbtCompound display = nbt.getCompound(ItemStack.DISPLAY_KEY);
+        NbtList lore = new NbtList();
+
+        lore.add(NbtString.of(Text.Serializer.toJson(new LiteralText(loreText).styled(style -> style.withItalic(false).withBold(true).withFormatting(Formatting.RED)))));
+        display.put(ItemStack.LORE_KEY, lore);
+        nbt.put(ItemStack.DISPLAY_KEY, display);
+        stack.setNbt(nbt);
+    }
+
+    public static int getLowestLevel(ItemStack[] armor) {
+        int min = 4;
+        for (ItemStack piece : armor) {
+            NbtCompound nbt = piece.getNbt();
+            if (!nbt.contains("PowerLevel")) return 0;
+            if (piece.isOf(Items.ELYTRA)) continue;
+
+            min = Math.min(min, nbt.getInt("PowerLevel"));
+        }
+        return min;
+    }
+
     @Override
     public int getColor(ItemStack stack) {
         NbtCompound nbtCompound = stack.getSubNbt("display");
@@ -54,7 +88,7 @@ public class BeaconArmorItem extends DyeableArmorItem {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         BlockPos target = new BlockPos(user.raycast(5.0D, 1.0F, false).getPos());
         Block block = world.getBlockState(target).getBlock();
-        if (block == Blocks.WATER_CAULDRON) {
+        if (block == Blocks.WATER_CAULDRON && ((DyeableArmorItem) user.getStackInHand(hand).getItem()).hasColor(user.getStackInHand(hand))) {
             LeveledCauldronBlock.decrementFluidLevel(world.getBlockState(target), world, target);
             this.removeColor(user.getStackInHand(hand));
             return TypedActionResult.pass(user.getStackInHand(hand));

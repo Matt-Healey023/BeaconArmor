@@ -174,7 +174,10 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
     private void upgradeArmor() {
         for (int i = 0; i <= 3; ++ i) {
             ItemStack item = new ItemStack(getArmorItem(i));
-            item.setNbt(inventory.getStack(i).getNbt());
+            NbtCompound nbt = inventory.getStack(i).getNbt();
+            nbt.putInt("PowerLevel", 1);
+            item.setNbt(nbt);
+
             inventory.removeStack(i);
             inventory.setStack(i, item);
         }
