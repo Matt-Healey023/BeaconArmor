@@ -18,10 +18,4 @@ public class BeaconSlot extends Slot {
     public boolean canInsert(ItemStack stack) {
         return stack.isOf(Items.BEACON);
     }
-
-    @Nullable
-    @Override
-    public Pair<Identifier, Identifier> getBackgroundSprite() {
-        return Pair.of(new Identifier("textures/atlas/blocks.png"), new Identifier("beaconarmor", "textures/gui/container/empty_beacon_slot"));
-    }
 }
