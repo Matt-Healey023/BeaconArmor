@@ -22,7 +22,6 @@ public class ImbueButton extends ImbuePressableWidget {
 
     @Override
     public void onPress() {
-        this.handler.upgrade();
         PacketByteBuf buf = PacketByteBufs.create();
         ClientPlayNetworking.send(new Identifier("beaconarmor", "imbuepacket"), buf);
     }
