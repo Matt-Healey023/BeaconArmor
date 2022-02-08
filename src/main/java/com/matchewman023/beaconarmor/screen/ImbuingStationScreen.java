@@ -27,17 +27,8 @@ public class ImbuingStationScreen extends HandledScreen<ImbuingStationScreenHand
         int y = (height - backgroundHeight) / 2;
         drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight);
 
-        // Beacon
-        if (handler.getSlot(4).getStack().isEmpty()) drawTexture(matrices, x + 80, y + 8, 177, 68, 16, 16);
-        // Items
-        if (handler.getSlot(13).getStack().isEmpty()) drawTexture(matrices, x + 152, y + 8, 177, 85, 16, 16);
-        if (handler.getSlot(14).getStack().isEmpty()) drawTexture(matrices, x + 152, y + 26, 177, 85, 16, 16);
-        if (handler.getSlot(15).getStack().isEmpty()) drawTexture(matrices, x + 152, y + 44, 177, 85, 16, 16);
-        if (handler.getSlot(16).getStack().isEmpty()) drawTexture(matrices, x + 152, y + 62, 177, 85, 16, 16);
-
         button.active = false;
         if (handler.hasContents()) button.active = true;
-
     }
 
     @Override
