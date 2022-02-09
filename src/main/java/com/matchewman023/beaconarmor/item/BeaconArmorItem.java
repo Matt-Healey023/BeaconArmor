@@ -59,7 +59,7 @@ public class BeaconArmorItem extends DyeableArmorItem {
 
     public static void setLevel(ItemStack stack, int level) {
         NbtCompound nbt = stack.getNbt();
-        nbt.putInt("PowerLevel", 1);
+        nbt.putInt(LEVEL_KEY, level);
 
         NbtCompound display = nbt.getCompound(ItemStack.DISPLAY_KEY);
         NbtList lore = new NbtList();

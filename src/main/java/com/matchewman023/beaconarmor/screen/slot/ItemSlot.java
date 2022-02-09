@@ -24,6 +24,11 @@ public class ItemSlot extends Slot {
         }
     }
 
+    @Override
+    public int getMaxItemCount() {
+        return 1;
+    }
+
     public void enable() { this.enabled = true; }
     public void disable() { this.enabled = false; }
 }

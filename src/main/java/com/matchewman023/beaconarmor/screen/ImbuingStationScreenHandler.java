@@ -38,6 +38,7 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
     private PlayerEntity player;
     public List<ItemSlot> itemSlots = new ArrayList<>();
     PropertyDelegate propertyDelegate;
+    private int maxLevel = 4;
 
     public ImbuingStationScreenHandler(int syncId, PlayerInventory inventory) {
         this(syncId, inventory, new SimpleInventory(17), new ArrayPropertyDelegate(1));
@@ -159,17 +160,35 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         if (inventory.getStack(0).isOf(Items.NETHERITE_HELMET)) {
             clearBlocks();
             upgradeArmor();
+        } else {
+            clearBlocks();
+            nextLevel();
         }
+        updateSlots();
         player.playSound(SoundEvents.BLOCK_BEACON_ACTIVATE, 1.0F, 1.0F);
+    }
+
+    private void nextLevel() {
+        List<ItemStack> armor = getArmor();
+        for (ItemStack piece : armor) {
+            BeaconArmorItem.setLevel(piece, (BeaconArmorItem.getLevel(piece) + 1));
+        }
+        this.propertyDelegate.set(0, BeaconArmorItem.getLevel(armor.get(0)));
+    }
+
+    private List<ItemStack> getArmor() {
+        List<ItemStack> armor = new ArrayList<>();
+        armor.add(inventory.getStack(0));
+        armor.add(inventory.getStack(1));
+        armor.add(inventory.getStack(2));
+        armor.add(inventory.getStack(3));
+
+        return armor;
     }
 
     private void updateSlots() {
         if (hasArmor() && inventory.getStack(0).isOf(Register.BEACON_HELMET)) {
-            List<ItemStack> armor = new ArrayList<>();
-            armor.add(inventory.getStack(0));
-            armor.add(inventory.getStack(1));
-            armor.add(inventory.getStack(2));
-            armor.add(inventory.getStack(3));
+            List<ItemStack> armor = getArmor();
 
             int level = BeaconArmorItem.getLowestLevel(armor);
 
@@ -192,7 +211,16 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
     }
 
     public boolean hasContents() {
-        if (this.hasBeacon() && this.getAmountBlocks() >= blocks && this.hasArmor()) {
+        if (this.hasBeacon() && this.getAmountBlocks() >= this.blocks && this.hasArmor()) {
+            if (inventory.getStack(0).isOf(Register.BEACON_HELMET)) {
+                List<ItemStack> armor = getArmor();
+                int level = BeaconArmorItem.getLowestLevel(armor);
+                for (ItemStack piece : armor) {
+                    if (BeaconArmorItem.getLevel(piece) > level || BeaconArmorItem.getLevel(piece) >= maxLevel) {
+                        return false;
+                    }
+                }
+            }
             return true;
         }
         return false;
@@ -239,8 +267,8 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
 
             inventory.removeStack(i);
             inventory.setStack(i, item);
-            updateSlots();
         }
+        this.propertyDelegate.set(0, 1);
     }
 
     private Item getArmorItem(int i) {
