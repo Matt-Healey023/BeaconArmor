@@ -28,7 +28,7 @@ public class Register {
     public static final Item BEACON_BOOTS = new BeaconArmorItem(BEACON, EquipmentSlot.FEET, new Item.Settings().group(ItemGroup.COMBAT).fireproof());
 
     public static final Block IMBUING_STATION_BLOCK = new ImbuingStation(FabricBlockSettings.of(Material.STONE).strength(10.0F, 1200.0F).sounds(BlockSoundGroup.STONE).nonOpaque().luminance(10).requiresTool());
-    public static final Item IMBUING_STATION_ITEM = new BlockItem(IMBUING_STATION_BLOCK, new FabricItemSettings().group(ItemGroup.DECORATIONS).fireproof());
+    public static final Item IMBUING_STATION_ITEM = new BlockItem(IMBUING_STATION_BLOCK, new FabricItemSettings().group(ItemGroup.DECORATIONS).fireproof().recipeRemainder(Items.DRAGON_EGG));
     public static ScreenHandlerType<ImbuingStationScreenHandler> IMBUING_STATION_SCREEN_HANDLER;
 
     public static void register() {

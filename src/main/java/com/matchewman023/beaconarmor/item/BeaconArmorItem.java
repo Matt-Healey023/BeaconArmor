@@ -25,6 +25,7 @@ import java.util.List;
 public class BeaconArmorItem extends DyeableArmorItem {
     private static final int white = 16777215;
     public static final String LEVEL_KEY = "PowerLevel";
+    public static final String EFFECT_KEY = "PowerEffects";
 
     public BeaconArmorItem(ArmorMaterial material, EquipmentSlot slot, Settings settings) {
         super(material, slot, settings);
