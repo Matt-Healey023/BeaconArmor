@@ -9,18 +9,21 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemSlot extends Slot {
+    public boolean enabled = false;
+
     public ItemSlot(Inventory inventory, int index, int x, int y) {
         super(inventory, index, x, y);
     }
 
     @Override
     public boolean canInsert(ItemStack stack) {
-        return stack.isOf(Items.SUGAR) || stack.isOf(Items.RABBIT_FOOT) || stack.isOf(Items.BLAZE_POWDER) || stack.isOf(Items.GHAST_TEAR) || stack.isOf(Items.MAGMA_CREAM) || stack.isOf(Items.PUFFERFISH) || stack.isOf(Items.GOLDEN_CARROT) || stack.isOf(Items.TURTLE_HELMET) || stack.isOf(Items.PHANTOM_MEMBRANE) || stack.isOf(Items.GOLDEN_PICKAXE) || stack.isOf(Items.COD);
+        if (enabled) {
+            return stack.isOf(Items.SUGAR) || stack.isOf(Items.RABBIT_FOOT) || stack.isOf(Items.BLAZE_POWDER) || stack.isOf(Items.GHAST_TEAR) || stack.isOf(Items.MAGMA_CREAM) || stack.isOf(Items.PUFFERFISH) || stack.isOf(Items.GOLDEN_CARROT) || stack.isOf(Items.TURTLE_HELMET) || stack.isOf(Items.PHANTOM_MEMBRANE) || stack.isOf(Items.GOLDEN_PICKAXE) || stack.isOf(Items.COD);
+        } else {
+            return false;
+        }
     }
 
-    @Nullable
-    @Override
-    public Pair<Identifier, Identifier> getBackgroundSprite() {
-        return Pair.of(new Identifier("textures/atlas/blocks.png"), new Identifier("beaconarmor", "gui/container/empty_item_slot"));
-    }
+    public void enable() { this.enabled = true; }
+    public void disable() { this.enabled = false; }
 }

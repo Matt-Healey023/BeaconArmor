@@ -6,6 +6,7 @@ import com.matchewman023.beaconarmor.registry.Register;
 import com.matchewman023.beaconarmor.screen.slot.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,30 +20,36 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.screen.*;
 import net.minecraft.screen.slot.CraftingResultSlot;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ImbuingStationScreenHandler extends ScreenHandler {
     private final Inventory inventory;
     private final int blocks = 164;
     private PlayerEntity player;
+    public List<ItemSlot> itemSlots = new ArrayList<>();
+    PropertyDelegate propertyDelegate;
 
     public ImbuingStationScreenHandler(int syncId, PlayerInventory inventory) {
-        this(syncId, inventory, new SimpleInventory(17));
+        this(syncId, inventory, new SimpleInventory(17), new ArrayPropertyDelegate(1));
     }
 
-    public ImbuingStationScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {
+    public ImbuingStationScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, PropertyDelegate propertyDelegate) {
         super(Register.IMBUING_STATION_SCREEN_HANDLER, syncId);
         checkSize(inventory, 17);
         this.inventory = inventory;
         this.player = playerInventory.player;
+        this.propertyDelegate = propertyDelegate;
+        this.addProperties(propertyDelegate);
 
         inventory.onOpen(playerInventory.player);
 
@@ -63,10 +70,17 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         this.addSlot(new BlockSlot(inventory, 11, 89, 44));
         this.addSlot(new BlockSlot(inventory, 12, 107, 44));
         // Items
-        this.addSlot(new ItemSlot(inventory, 13, 152, 8));
-        this.addSlot(new ItemSlot(inventory, 14, 152, 26));
-        this.addSlot(new ItemSlot(inventory, 15, 152, 44));
-        this.addSlot(new ItemSlot(inventory, 16, 152, 62));
+        if (itemSlots.isEmpty()) {
+            itemSlots.add(new ItemSlot(inventory, 13, 152, 8));
+            itemSlots.add(new ItemSlot(inventory, 14, 152, 26));
+            itemSlots.add(new ItemSlot(inventory, 15, 152, 44));
+            itemSlots.add(new ItemSlot(inventory, 16, 152, 62));
+        }
+
+        this.addSlot(itemSlots.get(0));
+        this.addSlot(itemSlots.get(1));
+        this.addSlot(itemSlots.get(2));
+        this.addSlot(itemSlots.get(3));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -77,6 +91,18 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
         }
+
+        addListener(new ScreenHandlerListener() {
+            @Override
+            public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
+                updateSlots();
+            }
+
+            @Override
+            public void onPropertyUpdate(ScreenHandler handler, int property, int value) {
+                return;
+            }
+        });
     }
 
     @Override
@@ -125,12 +151,44 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         }
     }
 
+    public int getEnabledItemSlots() {
+        return propertyDelegate.get(0);
+    }
+
     public void upgrade() {
         if (inventory.getStack(0).isOf(Items.NETHERITE_HELMET)) {
             clearBlocks();
             upgradeArmor();
         }
         player.playSound(SoundEvents.BLOCK_BEACON_ACTIVATE, 1.0F, 1.0F);
+    }
+
+    private void updateSlots() {
+        if (hasArmor() && inventory.getStack(0).isOf(Register.BEACON_HELMET)) {
+            List<ItemStack> armor = new ArrayList<>();
+            armor.add(inventory.getStack(0));
+            armor.add(inventory.getStack(1));
+            armor.add(inventory.getStack(2));
+            armor.add(inventory.getStack(3));
+
+            int level = BeaconArmorItem.getLowestLevel(armor);
+
+            int enabled = 0;
+            for (int i = 0; i <= 3; ++i) {
+                if (level >= (i + 1)) {
+                    itemSlots.get(i).enable();
+                    ++enabled;
+                } else {
+                    itemSlots.get(i).disable();
+                }
+            }
+            this.propertyDelegate.set(0, enabled);
+        } else {
+            for (int i = 0; i <= 3; ++i) {
+                itemSlots.get(i).disable();
+            }
+            this.propertyDelegate.set(0, 0);
+        }
     }
 
     public boolean hasContents() {
@@ -181,6 +239,7 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
 
             inventory.removeStack(i);
             inventory.setStack(i, item);
+            updateSlots();
         }
     }
 

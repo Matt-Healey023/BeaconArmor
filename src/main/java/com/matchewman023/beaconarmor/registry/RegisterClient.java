@@ -16,7 +16,6 @@ public class RegisterClient {
 
         ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).register(((atlasTexture, registry) -> {
             registry.register(new Identifier("beaconarmor", "gui/container/empty_beacon_slot"));
-            registry.register(new Identifier("beaconarmor", "gui/container/empty_item_slot"));
         }));
     }
 }

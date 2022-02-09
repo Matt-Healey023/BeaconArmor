@@ -20,8 +20,11 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public class BeaconArmorItem extends DyeableArmorItem {
     private static final int white = 16777215;
+    public static final String LEVEL_KEY = "PowerLevel";
 
     public BeaconArmorItem(ArmorMaterial material, EquipmentSlot slot, Settings settings) {
         super(material, slot, settings);
@@ -33,7 +36,7 @@ public class BeaconArmorItem extends DyeableArmorItem {
             if (entity instanceof PlayerEntity) {
                 NbtCompound nbt = stack.getNbt();
 
-                if (!stack.getNbt().contains("PowerLevel")) {
+                if (!stack.getNbt().contains(LEVEL_KEY)) {
                     setLevel(stack, 1);
                 }
 
@@ -67,14 +70,22 @@ public class BeaconArmorItem extends DyeableArmorItem {
         stack.setNbt(nbt);
     }
 
-    public static int getLowestLevel(ItemStack[] armor) {
+    public static int getLevel(ItemStack stack) {
+        return stack.getNbt().getInt(LEVEL_KEY);
+    }
+
+    public static int getLowestLevel(List<ItemStack> armor) {
         int min = 4;
         for (ItemStack piece : armor) {
-            NbtCompound nbt = piece.getNbt();
-            if (!nbt.contains("PowerLevel")) return 0;
-            if (piece.isOf(Items.ELYTRA)) continue;
+            if (piece.hasNbt()) {
+                NbtCompound nbt = piece.getNbt();
+                if (!nbt.contains(LEVEL_KEY)) return 0;
+                if (piece.isOf(Items.ELYTRA)) continue;
 
-            min = Math.min(min, nbt.getInt("PowerLevel"));
+                min = Math.min(min, nbt.getInt(LEVEL_KEY));
+            } else {
+                return 0;
+            }
         }
         return min;
     }
@@ -92,7 +103,7 @@ public class BeaconArmorItem extends DyeableArmorItem {
         if (block == Blocks.WATER_CAULDRON && ((DyeableArmorItem) user.getStackInHand(hand).getItem()).hasColor(user.getStackInHand(hand))) {
             LeveledCauldronBlock.decrementFluidLevel(world.getBlockState(target), world, target);
             this.removeColor(user.getStackInHand(hand));
-            return TypedActionResult.pass(user.getStackInHand(hand));
+            return TypedActionResult.fail(user.getStackInHand(hand));
         }
 
         return super.use(world, user, hand);
