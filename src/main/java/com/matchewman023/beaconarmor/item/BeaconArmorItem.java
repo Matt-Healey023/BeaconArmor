@@ -1,5 +1,6 @@
 package com.matchewman023.beaconarmor.item;
 
+import com.google.common.collect.ImmutableMap;
 import com.matchewman023.beaconarmor.BeaconArmor;
 import com.matchewman023.beaconarmor.registry.Register;
 import net.minecraft.block.Block;
@@ -8,6 +9,7 @@ import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -30,19 +32,20 @@ public class BeaconArmorItem extends DyeableArmorItem {
     private static final int white = 16777215;
     public static final String LEVEL_KEY = "PowerLevel";
     public static final String EFFECT_KEY = "PowerEffects";
-    public static final Map<Integer, StatusEffect> STATUS_EFFECT_MAP = new HashMap<>() {{
-        put(Item.getRawId(Items.SUGAR), StatusEffects.SPEED);
-        put(Item.getRawId(Items.RABBIT_FOOT), StatusEffects.JUMP_BOOST);
-        put(Item.getRawId(Items.BLAZE_POWDER), StatusEffects.STRENGTH);
-        put(Item.getRawId(Items.GHAST_TEAR), StatusEffects.REGENERATION);
-        put(Item.getRawId(Items.MAGMA_CREAM), StatusEffects.FIRE_RESISTANCE);
-        put(Item.getRawId(Items.PUFFERFISH), StatusEffects.WATER_BREATHING);
-        put(Item.getRawId(Items.GOLDEN_CARROT), StatusEffects.NIGHT_VISION);
-        put(Item.getRawId(Items.TURTLE_HELMET), StatusEffects.RESISTANCE);
-        put(Item.getRawId(Items.PHANTOM_MEMBRANE), StatusEffects.SLOW_FALLING);
-        put(Item.getRawId(Items.GOLDEN_PICKAXE), StatusEffects.HASTE);
-        put(Item.getRawId(Items.COD), StatusEffects.DOLPHINS_GRACE);
-    }};
+    public static final Map<Integer, StatusEffect> STATUS_EFFECT_MAP =
+            (new ImmutableMap.Builder<Integer, StatusEffect>())
+            .put(Item.getRawId(Items.SUGAR), StatusEffects.SPEED)
+            .put(Item.getRawId(Items.RABBIT_FOOT), StatusEffects.JUMP_BOOST)
+            .put(Item.getRawId(Items.BLAZE_POWDER), StatusEffects.STRENGTH)
+            .put(Item.getRawId(Items.GHAST_TEAR), StatusEffects.REGENERATION)
+            .put(Item.getRawId(Items.MAGMA_CREAM), StatusEffects.FIRE_RESISTANCE)
+            .put(Item.getRawId(Items.PUFFERFISH), StatusEffects.WATER_BREATHING)
+            .put(Item.getRawId(Items.GOLDEN_CARROT), StatusEffects.NIGHT_VISION)
+            .put(Item.getRawId(Items.TURTLE_HELMET), StatusEffects.RESISTANCE)
+            .put(Item.getRawId(Items.PHANTOM_MEMBRANE), StatusEffects.SLOW_FALLING)
+            .put(Item.getRawId(Items.GOLDEN_PICKAXE), StatusEffects.HASTE)
+            .put(Item.getRawId(Items.COD), StatusEffects.DOLPHINS_GRACE)
+            .build();
 
     public BeaconArmorItem(ArmorMaterial material, EquipmentSlot slot, Settings settings) {
         super(material, slot, settings);
@@ -60,12 +63,39 @@ public class BeaconArmorItem extends DyeableArmorItem {
 
                 PlayerEntity player = (PlayerEntity) entity;
                 if (hasArmor(player) && stack.isOf(Register.BEACON_HELMET)) {
-                    // Add Effects
+                    applyEffects(player, stack);
                 }
             }
         }
 
         super.inventoryTick(stack, world, entity, slot, selected);
+    }
+
+    private void applyEffects(PlayerEntity player, ItemStack helmet) {
+        int level = getLowestLevel(getArmor(player));
+        if (helmet.getNbt().contains(EFFECT_KEY)) {
+            int[] data = helmet.getNbt().getIntArray(EFFECT_KEY);
+            for (int i = 0; i < level; ++i) {
+                if (data[i] == -1) continue;
+                int count = -1;
+                for (int j = 0; j < level; j++) {
+                    if (data[j] == data[i]) ++count;
+                }
+
+                if (!player.hasStatusEffect(STATUS_EFFECT_MAP.get(data[i])) || (player.hasStatusEffect(STATUS_EFFECT_MAP.get(data[i])) && player.getStatusEffect(STATUS_EFFECT_MAP.get(data[i])).getDuration() < (300 - 20))) {
+                    player.addStatusEffect(new StatusEffectInstance(STATUS_EFFECT_MAP.get(data[i]), 300, count, false, false, true));
+                }
+            }
+        }
+    }
+
+    private List<ItemStack> getArmor(PlayerEntity player) {
+        List<ItemStack> armor = new ArrayList<>();
+        Iterable<ItemStack> temp = player.getArmorItems();
+        for (ItemStack stack : temp) {
+            armor.add(stack);
+        }
+        return armor;
     }
 
     private boolean hasArmor(PlayerEntity player) {
@@ -95,10 +125,10 @@ public class BeaconArmorItem extends DyeableArmorItem {
     public static int getLowestLevel(List<ItemStack> armor) {
         int min = 4;
         for (ItemStack piece : armor) {
+            if (piece.isOf(Items.ELYTRA)) continue;
             if (piece.hasNbt()) {
                 NbtCompound nbt = piece.getNbt();
                 if (!nbt.contains(LEVEL_KEY)) return 0;
-                if (piece.isOf(Items.ELYTRA)) continue;
 
                 min = Math.min(min, nbt.getInt(LEVEL_KEY));
             } else {
