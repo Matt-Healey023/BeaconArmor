@@ -82,7 +82,8 @@ public class BeaconArmorItem extends DyeableArmorItem {
                     if (data[j] == data[i]) ++count;
                 }
 
-                if (!player.hasStatusEffect(STATUS_EFFECT_MAP.get(data[i])) || (player.hasStatusEffect(STATUS_EFFECT_MAP.get(data[i])) && player.getStatusEffect(STATUS_EFFECT_MAP.get(data[i])).getDuration() < (300 - 20))) {
+                if (!player.hasStatusEffect(STATUS_EFFECT_MAP.get(data[i])) || (player.hasStatusEffect(STATUS_EFFECT_MAP.get(data[i])) && player.getStatusEffect(STATUS_EFFECT_MAP.get(data[i])).getDuration() < (300 - 20)) || player.getStatusEffect(STATUS_EFFECT_MAP.get(data[i])).getAmplifier() != count) {
+                    player.removeStatusEffect(STATUS_EFFECT_MAP.get(data[i]));
                     player.addStatusEffect(new StatusEffectInstance(STATUS_EFFECT_MAP.get(data[i]), 300, count, false, false, true));
                 }
             }
