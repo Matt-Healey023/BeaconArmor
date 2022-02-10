@@ -1,7 +1,9 @@
 package com.matchewman023.beaconarmor.screen.slot;
 
+import com.matchewman023.beaconarmor.item.BeaconArmorItem;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
@@ -18,7 +20,7 @@ public class ItemSlot extends Slot {
     @Override
     public boolean canInsert(ItemStack stack) {
         if (enabled) {
-            return stack.isOf(Items.SUGAR) || stack.isOf(Items.RABBIT_FOOT) || stack.isOf(Items.BLAZE_POWDER) || stack.isOf(Items.GHAST_TEAR) || stack.isOf(Items.MAGMA_CREAM) || stack.isOf(Items.PUFFERFISH) || stack.isOf(Items.GOLDEN_CARROT) || stack.isOf(Items.TURTLE_HELMET) || stack.isOf(Items.PHANTOM_MEMBRANE) || stack.isOf(Items.GOLDEN_PICKAXE) || stack.isOf(Items.COD);
+            return BeaconArmorItem.STATUS_EFFECT_MAP.containsKey(Item.getRawId(stack.getItem()));
         } else {
             return false;
         }

@@ -7,6 +7,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
@@ -19,13 +21,28 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.*;
 
 public class BeaconArmorItem extends DyeableArmorItem {
     private static final int white = 16777215;
     public static final String LEVEL_KEY = "PowerLevel";
     public static final String EFFECT_KEY = "PowerEffects";
+    public static final Map<Integer, StatusEffect> STATUS_EFFECT_MAP = new HashMap<>() {{
+        put(Item.getRawId(Items.SUGAR), StatusEffects.SPEED);
+        put(Item.getRawId(Items.RABBIT_FOOT), StatusEffects.JUMP_BOOST);
+        put(Item.getRawId(Items.BLAZE_POWDER), StatusEffects.STRENGTH);
+        put(Item.getRawId(Items.GHAST_TEAR), StatusEffects.REGENERATION);
+        put(Item.getRawId(Items.MAGMA_CREAM), StatusEffects.FIRE_RESISTANCE);
+        put(Item.getRawId(Items.PUFFERFISH), StatusEffects.WATER_BREATHING);
+        put(Item.getRawId(Items.GOLDEN_CARROT), StatusEffects.NIGHT_VISION);
+        put(Item.getRawId(Items.TURTLE_HELMET), StatusEffects.RESISTANCE);
+        put(Item.getRawId(Items.PHANTOM_MEMBRANE), StatusEffects.SLOW_FALLING);
+        put(Item.getRawId(Items.GOLDEN_PICKAXE), StatusEffects.HASTE);
+        put(Item.getRawId(Items.COD), StatusEffects.DOLPHINS_GRACE);
+    }};
 
     public BeaconArmorItem(ArmorMaterial material, EquipmentSlot slot, Settings settings) {
         super(material, slot, settings);
