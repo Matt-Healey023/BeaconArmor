@@ -62,7 +62,7 @@ public class BeaconArmorItem extends DyeableArmorItem {
                 }
 
                 PlayerEntity player = (PlayerEntity) entity;
-                if (hasArmor(player) && stack.isOf(Register.BEACON_HELMET)) {
+                if (hasArmor(player) && stack.isOf(Register.BEACON_HELMET) && player.getInventory().getArmorStack(3).equals(stack)) {
                     applyEffects(player, stack);
                 }
             }
