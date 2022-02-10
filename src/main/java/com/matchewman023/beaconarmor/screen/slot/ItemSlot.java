@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemSlot extends Slot {
-    public boolean enabled = false;
+    private boolean enabled = false;
 
     public ItemSlot(Inventory inventory, int index, int x, int y) {
         super(inventory, index, x, y);
@@ -28,6 +28,8 @@ public class ItemSlot extends Slot {
     public int getMaxItemCount() {
         return 1;
     }
+
+    public boolean getEnabled() { return this.enabled; }
 
     public void enable() { this.enabled = true; }
     public void disable() { this.enabled = false; }

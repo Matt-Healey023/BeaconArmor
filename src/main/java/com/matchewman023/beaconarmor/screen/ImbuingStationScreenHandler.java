@@ -97,7 +97,7 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         addListener(new ScreenHandlerListener() {
             @Override
             public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
-                updateSlots();
+                updateSlots(slotId);
             }
 
             @Override
@@ -150,19 +150,29 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
                     }
                 }
             }
-            saveEffects();
+
+            if (!this.getCursorStack().isEmpty()) {
+                if (player.isAlive() && !((ServerPlayerEntity) player).isDisconnected()) {
+                    player.getInventory().offerOrDrop(this.getCursorStack());
+                } else {
+                    player.dropItem(this.getCursorStack(), false);
+                }
+            }
         }
     }
 
     private void saveEffects() {
-        if (helmet != null) {
-            int level = BeaconArmorItem.getLowestLevel(getArmor());
-            int[] data = new int[level];
+        if (this.helmet != null) {
+            int[] data = new int[4];
 
             NbtCompound nbt = this.helmet.getNbt();
+            boolean hasEffects = false;
             if (nbt.contains(BeaconArmorItem.EFFECT_KEY)) {
                 data = nbt.getIntArray(BeaconArmorItem.EFFECT_KEY);
+                hasEffects = true;
             }
+
+            int level = BeaconArmorItem.getLowestLevel(getArmor());
             int[] original = data.clone();
             for (int i = 0; i < level; ++i) {
                 if (!itemSlots.get(i).getStack().isEmpty()) {
@@ -172,11 +182,12 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
                 }
             }
 
-            if (original != data) {
-                nbt.putIntArray(BeaconArmorItem.EFFECT_KEY, data);
-                helmet.writeNbt(nbt);
+            if (hasEffects) {
+                if (original.equals(data)) return;
             }
-            removeItems();
+
+            nbt.putIntArray(BeaconArmorItem.EFFECT_KEY, data);
+            this.helmet.setNbt(nbt);
         }
     }
 
@@ -195,7 +206,9 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
                 int[] data = nbt.getIntArray(BeaconArmorItem.EFFECT_KEY);
                 int level = BeaconArmorItem.getLowestLevel(getArmor());
                 for (int i = 0; i < level; ++i) {
-                    itemSlots.get(i).setStack(new ItemStack(Item.byRawId(data[i])));
+                    if (data[i] == -1) continue;
+                    ItemStack item = new ItemStack(Item.byRawId(data[i]));
+                    itemSlots.get(i).setStack(item);
                 }
             }
         }
@@ -213,7 +226,7 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
             clearBlocks();
             nextLevel();
         }
-        updateSlots();
+        for (int i = 0; i <=3; ++i) updateSlots(i);
         player.playSound(SoundEvents.BLOCK_BEACON_ACTIVATE, 1.0F, 1.0F);
     }
 
@@ -235,31 +248,41 @@ public class ImbuingStationScreenHandler extends ScreenHandler {
         return armor;
     }
 
-    private void updateSlots() {
-        if (hasArmor() && inventory.getStack(0).isOf(Register.BEACON_HELMET)) {
-            this.helmet = inventory.getStack(0);
-            List<ItemStack> armor = getArmor();
+    private void updateSlots(int slotId) {
+        if (!(slotId >= 4 && slotId <= 12)) {
+            if (slotId >= 0 && slotId <= 3) {
+                if (hasArmor() && inventory.getStack(0).isOf(Register.BEACON_HELMET)) {
+                    removeItems();
+                    this.helmet = inventory.getStack(0);
+                    List<ItemStack> armor = getArmor();
 
-            int level = BeaconArmorItem.getLowestLevel(armor);
+                    int level = BeaconArmorItem.getLowestLevel(armor);
 
-            int enabled = 0;
-            for (int i = 0; i <= 3; ++i) {
-                if (level >= (i + 1)) {
-                    itemSlots.get(i).enable();
-                    ++enabled;
-                } else {
-                    itemSlots.get(i).disable();
+                    int enabled = 0;
+                    for (int i = 0; i <= 3; ++i) {
+                        if (level >= (i + 1)) {
+                            itemSlots.get(i).enable();
+                            ++enabled;
+                        } else {
+                            itemSlots.get(i).disable();
+                        }
+                    }
+                    this.propertyDelegate.set(0, enabled);
+                    placeItems();
+                } else if (this.helmet != null) {
+                    if (this.helmet.isOf(Register.BEACON_HELMET) || this.getCursorStack().isOf(Register.BEACON_HELMET)) {
+                        if (this.getCursorStack().isOf(Register.BEACON_HELMET)) this.helmet = this.getCursorStack();
+                        for (int i = 0; i <= 3; ++i) {
+                            itemSlots.get(i).disable();
+                        }
+                        this.propertyDelegate.set(0, 0);
+                        removeItems();
+                    }
                 }
+            } else {
+                if (itemSlots.get(0).getEnabled()) saveEffects();
             }
-            this.propertyDelegate.set(0, enabled);
-            placeItems();
-        } else {
-            for (int i = 0; i <= 3; ++i) {
-                itemSlots.get(i).disable();
-            }
-            this.propertyDelegate.set(0, 0);
         }
-        saveEffects();
     }
 
     public boolean hasContents() {
